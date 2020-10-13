@@ -298,7 +298,7 @@ export const linkPageBreakBlockDataFragment = gql`
     linkURL
     linkText
     linkTarget
-    linkTarget
+    hideButton
     styleOption
     layoutOption
     image {
