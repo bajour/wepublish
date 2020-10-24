@@ -169,7 +169,8 @@ function deriveInputFromEmbedBlockValue(embed: EmbedBlockValue) {
     case EmbedType.SoundCloudTrack:
       return `https://api.soundcloud.com/tracks/${embed.trackID}`
 
-    case EmbedType.Other: {
+    case EmbedType.Other:
+    default: {
       const hasTitle = !!embed.title
       const hasHeight = !!embed.height
       const hasWidth = !!embed.width
