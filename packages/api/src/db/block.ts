@@ -110,6 +110,7 @@ export interface LinkPageBreakBlock {
   styleOption?: string
   layoutOption?: string
   imageID?: string
+  embed?: any
 }
 
 export interface TitleBlock {

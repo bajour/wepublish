@@ -404,6 +404,7 @@ export const GraphQLSoundCloudTrackBlock = new GraphQLObjectType<SoundCloudTrack
 export const GraphQLEmbedBlock = new GraphQLObjectType<EmbedBlock, Context>({
   name: 'EmbedBlock',
   fields: {
+    type: {type: GraphQLString},
     url: {type: GraphQLString},
     title: {type: GraphQLString},
     width: {type: GraphQLInt},
@@ -436,29 +437,6 @@ export const GraphQLListicleBlock = new GraphQLObjectType<ListicleBlock, Context
   },
   isTypeOf: createProxyingIsTypeOf(value => {
     return value.type === BlockType.Listicle
-  })
-})
-
-export const GraphQLLinkPageBreakBlock = new GraphQLObjectType<LinkPageBreakBlock, Context>({
-  name: 'LinkPageBreakBlock',
-  fields: {
-    text: {type: GraphQLString},
-    richText: {type: GraphQLNonNull(GraphQLRichText)},
-    linkURL: {type: GraphQLString},
-    linkText: {type: GraphQLString},
-    linkTarget: {type: GraphQLString},
-    hideButton: {type: GraphQLBoolean},
-    styleOption: {type: GraphQLString},
-    layoutOption: {type: GraphQLString},
-    image: {
-      type: GraphQLImage,
-      resolve: createProxyingResolver(({imageID}, _args, {loaders}) => {
-        return imageID ? loaders.images.load(imageID) : null
-      })
-    }
-  },
-  isTypeOf: createProxyingIsTypeOf(value => {
-    return value.type === BlockType.LinkPageBreak
   })
 })
 
@@ -548,21 +526,6 @@ export const GraphQLQuoteBlockInput = new GraphQLInputObjectType({
   }
 })
 
-export const GraphQLLinkPageBreakBlockInput = new GraphQLInputObjectType({
-  name: 'LinkPageBreakBlockInput',
-  fields: {
-    text: {type: GraphQLString},
-    richText: {type: GraphQLNonNull(GraphQLRichText)},
-    linkURL: {type: GraphQLString},
-    linkText: {type: GraphQLString},
-    linkTarget: {type: GraphQLString},
-    hideButton: {type: GraphQLBoolean},
-    styleOption: {type: GraphQLString},
-    layoutOption: {type: GraphQLString},
-    imageID: {type: GraphQLID}
-  }
-})
-
 export const GraphQLFacebookPostBlockInput = new GraphQLInputObjectType({
   name: 'FacebookPostBlockInput',
   fields: {
@@ -618,11 +581,28 @@ export const GraphQLSoundCloudTrackBlockInput = new GraphQLInputObjectType({
 export const GraphQLEmbedBlockInput = new GraphQLInputObjectType({
   name: 'EmbedBlockInput',
   fields: {
+    type: {type: GraphQLString},
     url: {type: GraphQLString},
     title: {type: GraphQLString},
     width: {type: GraphQLInt},
     height: {type: GraphQLInt},
     styleCustom: {type: GraphQLString}
+  }
+})
+
+export const GraphQLLinkPageBreakBlockInput = new GraphQLInputObjectType({
+  name: 'LinkPageBreakBlockInput',
+  fields: {
+    text: {type: GraphQLString},
+    richText: {type: GraphQLNonNull(GraphQLRichText)},
+    linkURL: {type: GraphQLString},
+    linkText: {type: GraphQLString},
+    linkTarget: {type: GraphQLString},
+    hideButton: {type: GraphQLBoolean},
+    styleOption: {type: GraphQLString},
+    layoutOption: {type: GraphQLString},
+    imageID: {type: GraphQLID},
+    embed: {type: GraphQLEmbedBlockInput}
   }
 })
 
@@ -678,6 +658,30 @@ export const GraphQLTeaserGridBlockInput = new GraphQLInputObjectType({
     teasers: {type: GraphQLNonNull(GraphQLList(GraphQLTeaserInput))},
     numColumns: {type: GraphQLNonNull(GraphQLInt)}
   }
+})
+
+export const GraphQLLinkPageBreakBlock = new GraphQLObjectType<LinkPageBreakBlock, Context>({
+  name: 'LinkPageBreakBlock',
+  fields: {
+    text: {type: GraphQLString},
+    richText: {type: GraphQLNonNull(GraphQLRichText)},
+    linkURL: {type: GraphQLString},
+    linkText: {type: GraphQLString},
+    linkTarget: {type: GraphQLString},
+    hideButton: {type: GraphQLBoolean},
+    styleOption: {type: GraphQLString},
+    layoutOption: {type: GraphQLString},
+    image: {
+      type: GraphQLImage,
+      resolve: createProxyingResolver(({imageID}, _args, {loaders}) => {
+        return imageID ? loaders.images.load(imageID) : null
+      })
+    },
+    embed: {type: GraphQLEmbedBlock}
+  },
+  isTypeOf: createProxyingIsTypeOf(value => {
+    return value.type === BlockType.LinkPageBreak
+  })
 })
 
 export const GraphQLBlockInput = new GraphQLInputObjectType({
