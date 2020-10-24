@@ -82,6 +82,14 @@ fragment FullBlock on Block {
     image {
       ...ImageRef
     }
+    embed {
+      type
+      url
+      title
+      width
+      height
+      styleCustom
+    }
   }
 
   ... on ImageBlock {
