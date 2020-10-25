@@ -282,7 +282,7 @@ export function unionMapForBlock(block: BlockValue): BlockInput {
           linkTarget: block.value.linkTarget || undefined,
           hideButton: block.value.hideButton || undefined,
           imageID: block.value.image?.id || undefined,
-          embed: block.value?.embed
+          embed: block.value?.embed || undefined
         }
       }
 

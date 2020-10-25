@@ -75,7 +75,7 @@ export function LinkPageBreakBlock({
       onChange(value => ({
         ...value,
         embed: isFunctionalUpdate(embed)
-          ? embed(value.embed)
+          ? delete value.embed.type && embed({type: 'embed', ...value.embed})
           : delete embed.type && {type: 'embed', ...embed}
       })),
     [onChange]
@@ -136,39 +136,39 @@ export function LinkPageBreakBlock({
               onChange={e => onChange({...value, text: e.target.value})}
             />
           </Box>
-          {isEmbedActive && (
-            <Card marginRight={0} minHeight={70} marginBottom={Spacing.ExtraSmall} padding={'10px'}>
-              <EmbedBlock value={embed} onChange={handleEmbedChange} />
-            </Card>
-          )}
-          <Card minHeight={70} padding={'10px'}>
+          <Card minHeight={70} padding={Spacing.ExtraSmall} marginBottom={Spacing.ExtraSmall}>
             {
               <RichTextBlock
                 value={richText || createDefaultValue()}
                 onChange={handleRichTextChange}
               />
             }
+            <Box style={{width: '50%', display: 'inline-block'}}>
+              <TextInput
+                ref={focusInputRef}
+                placeholder="CTA Button label"
+                label="CTA Button label"
+                value={linkText}
+                disabled={disabled}
+                onChange={e => onChange({...value, linkText: e.target.value})}
+              />
+            </Box>
+            <Box style={{width: '50%', display: 'inline-block', padding: '10px'}}>
+              <TextInput
+                ref={focusInputRef}
+                placeholder="CTA Button link"
+                label="CTA Button link"
+                value={linkURL}
+                disabled={disabled}
+                onChange={e => onChange({...value, linkURL: e.target.value})}
+              />
+            </Box>
           </Card>
-          <Box style={{width: '50%', display: 'inline-block'}}>
-            <TextInput
-              ref={focusInputRef}
-              placeholder="Button label"
-              label="Button label"
-              value={linkText}
-              disabled={disabled}
-              onChange={e => onChange({...value, linkText: e.target.value})}
-            />
-          </Box>
-          <Box style={{width: '50%', display: 'inline-block', padding: '10px'}}>
-            <TextInput
-              ref={focusInputRef}
-              placeholder="Button link"
-              label="Button link"
-              value={linkURL}
-              disabled={disabled}
-              onChange={e => onChange({...value, linkURL: e.target.value})}
-            />
-          </Box>
+          {isEmbedActive && (
+            <Card marginRight={0} minHeight={70} marginBottom={Spacing.ExtraSmall} padding={'10px'}>
+              <EmbedBlock value={embed} onChange={handleEmbedChange} />
+            </Card>
+          )}
         </Box>
       </div>
       <div className={'option-wrapper'} style={{display: 'flex'}}>
@@ -214,6 +214,7 @@ export function LinkPageBreakBlock({
           <Box padding={'10'}>
             <small>Layouts: </small>
             <select
+              disabled={styleOption === 'image'}
               defaultValue={layoutOption}
               onChange={e => onChange({...value, layoutOption: e.target.value || ''})}>
               <option value="default">Default Layout</option>
