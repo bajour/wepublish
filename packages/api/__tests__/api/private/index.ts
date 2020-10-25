@@ -240,6 +240,7 @@ export type EmbedBlock = {
 }
 
 export type EmbedBlockInput = {
+  type?: Maybe<Scalars['String']>
   url?: Maybe<Scalars['String']>
   title?: Maybe<Scalars['String']>
   width?: Maybe<Scalars['Int']>
@@ -402,6 +403,7 @@ export type LinkPageBreakBlock = {
   styleOption?: Maybe<Scalars['String']>
   layoutOption?: Maybe<Scalars['String']>
   image?: Maybe<Image>
+  embed?: Maybe<EmbedBlockInput>
 }
 
 export type LinkPageBreakBlockInput = {
@@ -414,6 +416,7 @@ export type LinkPageBreakBlockInput = {
   styleOption?: Maybe<Scalars['String']>
   layoutOption?: Maybe<Scalars['String']>
   imageID?: Maybe<Scalars['ID']>
+  embed?: Maybe<EmbedBlockInput>
 }
 
 export type ListicleBlock = {
@@ -2095,6 +2098,13 @@ export const FullBlock = gql`
       richText
       image {
         ...ImageRef
+      }
+      embed {
+        url
+        title
+        width
+        height
+        styleCustom
       }
     }
     ... on ImageBlock {

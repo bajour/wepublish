@@ -228,6 +228,7 @@ export type LinkPageBreakBlock = {
   styleOption?: Maybe<Scalars['String']>
   layoutOption?: Maybe<Scalars['String']>
   image?: Maybe<Image>
+  embed?: Maybe<EmbedType.Other>
 }
 
 export type ListicleBlock = {

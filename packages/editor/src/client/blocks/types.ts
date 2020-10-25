@@ -62,18 +62,6 @@ export interface QuoteBlockValue {
   author: string
 }
 
-export interface LinkPageBreakBlockValue {
-  text: string
-  richText: RichTextBlockValue
-  linkURL: string
-  linkText: string
-  linkTarget?: string
-  hideButton?: boolean
-  styleOption?: string
-  layoutOption?: string
-  image?: ImageRefFragment | undefined
-}
-
 export enum EmbedType {
   FacebookPost = 'facebookPost',
   FacebookVideo = 'facebookVideo',
@@ -146,6 +134,19 @@ export enum TeaserType {
   Article = 'article',
   PeerArticle = 'peerArticle',
   Page = 'page'
+}
+
+export interface LinkPageBreakBlockValue {
+  text: string
+  richText: RichTextBlockValue
+  linkURL: string
+  linkText: string
+  linkTarget?: string
+  hideButton?: boolean
+  styleOption?: string
+  layoutOption?: string
+  image?: ImageRefFragment | undefined | null
+  embed?: EmbedBlockValue | any
 }
 
 export interface ArticleTeaserLink {
@@ -280,7 +281,8 @@ export function unionMapForBlock(block: BlockValue): BlockInput {
           richText: block.value.richText,
           linkTarget: block.value.linkTarget || undefined,
           hideButton: block.value.hideButton || undefined,
-          imageID: block.value.image?.id || undefined
+          imageID: block.value.image?.id || undefined,
+          embed: block.value?.embed || undefined
         }
       }
 
@@ -611,7 +613,8 @@ export function blockForQueryBlock(block: FullBlockFragment | null): BlockValue 
           richText: block.richText,
           linkTarget: block.linkTarget ?? '',
           hideButton: block.hideButton ?? false,
-          image: block.image ?? undefined
+          image: block.image ?? undefined,
+          embed: block.embed ?? undefined
         }
       }
 

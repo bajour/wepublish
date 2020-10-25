@@ -1,31 +1,33 @@
-import React, {useRef, useEffect, useState, useCallback} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 
 import {
   BlockProps,
   Box,
-  TextInput,
-  Radio,
-  RadioGroup,
   Card,
-  Spacing,
-  PlaceholderInput,
-  ZIndex,
+  Drawer,
   IconButton,
   Image,
-  Drawer,
-  Toggle
+  PlaceholderInput,
+  Radio,
+  RadioGroup,
+  Spacing,
+  TextInput,
+  Toggle,
+  ZIndex
 } from '@karma.run/ui'
-import {LinkPageBreakBlockValue, RichTextBlockValue} from './types'
+import {EmbedBlockValue, EmbedType, LinkPageBreakBlockValue, RichTextBlockValue} from './types'
 import {
   MaterialIconClose,
   MaterialIconEditOutlined,
   MaterialIconImageOutlined
 } from '@karma.run/icons'
+import {EmbedBlock} from './embedBlock'
 import {createDefaultValue, RichTextBlock} from './richTextBlock'
 import {ImageSelectPanel} from '../panel/imageSelectPanel'
 import {ImagedEditPanel} from '../panel/imageEditPanel'
 import {isFunctionalUpdate} from '@karma.run/react'
 import {v4 as uuidv4} from 'uuid'
+
 export type LinkPageBreakBlockProps = BlockProps<LinkPageBreakBlockValue>
 
 export function LinkPageBreakBlock({
@@ -43,15 +45,18 @@ export function LinkPageBreakBlock({
     richText,
     linkTarget,
     hideButton,
-    image
+    image,
+    embed = {
+      type: EmbedType.Other,
+      ...value.embed
+    }
   } = value
+
   const focusRef = useRef<HTMLTextAreaElement>(null)
   const focusInputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (autofocus) focusRef.current?.focus()
-  }, [])
-
+  const [isEmbedActive, setEmbedActive] = useState(false)
+  const [isChooseModalOpen, setChooseModalOpen] = useState(false)
+  const [isEditModalOpen, setEditModalOpen] = useState(false)
   const handleRichTextChange = useCallback(
     (richText: React.SetStateAction<RichTextBlockValue>) =>
       onChange(value => ({
@@ -61,54 +66,35 @@ export function LinkPageBreakBlock({
     [onChange]
   )
 
-  const [isChooseModalOpen, setChooseModalOpen] = useState(false)
-  const [isEditModalOpen, setEditModalOpen] = useState(false)
+  // Delete GQL reponse typename
+  delete embed.__typename
+
+  // Handle Embed input, overwrite type
+  const handleEmbedChange = useCallback(
+    (embed: React.SetStateAction<EmbedBlockValue>) =>
+      onChange(value => ({
+        ...value,
+        embed: isFunctionalUpdate(embed)
+          ? delete value.embed.type && embed({type: 'embed', ...value.embed})
+          : delete embed.type && {type: 'embed', ...embed}
+      })),
+    [onChange]
+  )
+
+  useEffect(() => {
+    if (autofocus) focusRef.current?.focus()
+    if (styleOption === 'embed') setEmbedActive(true)
+  }, [])
 
   return (
     <>
-      <Box flexGrow={1} style={{marginBottom: '20px'}}>
-        <TextInput
-          ref={focusInputRef}
-          placeholder="Title"
-          label="Title"
-          style={{fontSize: '24px'}}
-          value={text}
-          disabled={disabled}
-          onChange={e => onChange({...value, text: e.target.value})}
-        />
-      </Box>
-      <Box flexGrow={1}>
-        <RichTextBlock value={richText || createDefaultValue()} onChange={handleRichTextChange} />
-      </Box>
-      <Box style={{width: '50%', display: 'inline-block'}}>
-        <TextInput
-          ref={focusInputRef}
-          placeholder="Link Text"
-          label="Button label"
-          value={linkText}
-          disabled={disabled}
-          onChange={e => onChange({...value, linkText: e.target.value})}
-        />
-      </Box>
-      <Box style={{width: '50%', display: 'inline-block', padding: '10px'}}>
-        <TextInput
-          ref={focusInputRef}
-          placeholder="Link URL"
-          label="Button link"
-          value={linkURL}
-          disabled={disabled}
-          onChange={e => onChange({...value, linkURL: e.target.value})}
-        />
-      </Box>
-      <br />
-      <br />
-      <div className={'option-wrapper'} style={{display: 'flex'}}>
+      <div className={'input-wrapper'} style={{display: 'flex'}}>
         <Card
           overflow="hidden"
           width={200}
           height={150}
-          marginRight={Spacing.ExtraSmall}
-          flexShrink={0}>
+          alignSelf={'center'}
+          marginRight={Spacing.ExtraSmall}>
           <PlaceholderInput onAddClick={() => setChooseModalOpen(true)}>
             {image && (
               <Box position="relative" width="100%" height="100%">
@@ -137,13 +123,64 @@ export function LinkPageBreakBlock({
             )}
           </PlaceholderInput>
         </Card>
+        <Box overflow="hidden" style={{width: 'calc(100% - 240px)'}} flexGrow={1}>
+          <Box flexGrow={1} style={{marginBottom: '20px'}}>
+            <TextInput
+              ref={focusInputRef}
+              placeholder="Title"
+              label="Title"
+              style={{fontSize: '24px'}}
+              value={text}
+              marginRight={Spacing.ExtraSmall}
+              disabled={disabled}
+              onChange={e => onChange({...value, text: e.target.value})}
+            />
+          </Box>
+          <Card minHeight={70} padding={Spacing.ExtraSmall} marginBottom={Spacing.ExtraSmall}>
+            {
+              <RichTextBlock
+                value={richText || createDefaultValue()}
+                onChange={handleRichTextChange}
+              />
+            }
+            <Box style={{width: '50%', display: 'inline-block'}}>
+              <TextInput
+                ref={focusInputRef}
+                placeholder="CTA Button label"
+                label="CTA Button label"
+                value={linkText}
+                disabled={disabled}
+                onChange={e => onChange({...value, linkText: e.target.value})}
+              />
+            </Box>
+            <Box style={{width: '50%', display: 'inline-block', padding: '10px'}}>
+              <TextInput
+                ref={focusInputRef}
+                placeholder="CTA Button link"
+                label="CTA Button link"
+                value={linkURL}
+                disabled={disabled}
+                onChange={e => onChange({...value, linkURL: e.target.value})}
+              />
+            </Box>
+          </Card>
+          {isEmbedActive && (
+            <Card marginRight={0} minHeight={70} marginBottom={Spacing.ExtraSmall} padding={'10px'}>
+              <EmbedBlock value={embed} onChange={handleEmbedChange} />
+            </Card>
+          )}
+        </Box>
+      </div>
+      <div className={'option-wrapper'} style={{display: 'flex'}}>
         <Card overflow="hidden" width={200} height={150} marginRight={Spacing.ExtraSmall}>
           <Box padding={'10'}>
-            <p>Link Settings</p>
             <RadioGroup
               name={'radiogroup-' + uuidv4()}
               onChange={e => onChange({...value, linkTarget: e.target.value || '_self'})}
               value={linkTarget || '_self'}>
+              <label>
+                <p>Links settings</p>
+              </label>
               <Radio
                 value={'_self'}
                 label={'This browser tab'}
@@ -157,25 +194,27 @@ export function LinkPageBreakBlock({
             </RadioGroup>
           </Box>
         </Card>
-        <Card
-          overflow="hidden"
-          width={200}
-          height={150}
-          flexGrow={1}
-          marginRight={Spacing.ExtraSmall}>
+        <Card overflow="hidden" width={200} height={150} flexGrow={1}>
           <Box padding={'10'}>
             <small>Styles: </small>
             <select
               defaultValue={styleOption}
+              onInput={e =>
+                !!e.currentTarget && e.currentTarget.value === 'embed'
+                  ? setEmbedActive(true)
+                  : setEmbedActive(false)
+              }
               onChange={e => onChange({...value, styleOption: e.target.value || ''})}>
               <option value="default">Default Style</option>
               <option value="dark">Dark Style</option>
               <option value="image">Image Background</option>
+              <option value="embed">Embed</option>
             </select>
           </Box>
           <Box padding={'10'}>
             <small>Layouts: </small>
             <select
+              disabled={styleOption === 'image'}
               defaultValue={layoutOption}
               onChange={e => onChange({...value, layoutOption: e.target.value || ''})}>
               <option value="default">Default Layout</option>

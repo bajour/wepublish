@@ -219,6 +219,7 @@ export type CreatePeerInput = {
 
 export type EmbedBlock = {
   __typename?: 'EmbedBlock';
+  type?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   width?: Maybe<Scalars['Int']>;
@@ -227,6 +228,7 @@ export type EmbedBlock = {
 };
 
 export type EmbedBlockInput = {
+  type?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   width?: Maybe<Scalars['Int']>;
@@ -390,6 +392,7 @@ export type LinkPageBreakBlock = {
   styleOption?: Maybe<Scalars['String']>;
   layoutOption?: Maybe<Scalars['String']>;
   image?: Maybe<Image>;
+  embed?: Maybe<EmbedBlock>;
 };
 
 export type LinkPageBreakBlockInput = {
@@ -402,6 +405,7 @@ export type LinkPageBreakBlockInput = {
   styleOption?: Maybe<Scalars['String']>;
   layoutOption?: Maybe<Scalars['String']>;
   imageID?: Maybe<Scalars['ID']>;
+  embed?: Maybe<EmbedBlockInput>;
 };
 
 export type ListicleBlock = {
@@ -1761,6 +1765,9 @@ type FullBlock_LinkPageBreakBlock_Fragment = (
   & { image?: Maybe<(
     { __typename?: 'Image' }
     & ImageRefFragment
+  )>, embed?: Maybe<(
+    { __typename?: 'EmbedBlock' }
+    & Pick<EmbedBlock, 'url' | 'title' | 'width' | 'height' | 'styleCustom'>
   )> }
 );
 
@@ -2660,6 +2667,13 @@ export const FullBlockFragmentDoc = gql`
     layoutOption
     image {
       ...ImageRef
+    }
+    embed {
+      url
+      title
+      width
+      height
+      styleCustom
     }
   }
   ... on ImageBlock {
