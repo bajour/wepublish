@@ -75,7 +75,9 @@ export function LinkPageBreakBlock({
       onChange(value => ({
         ...value,
         embed: isFunctionalUpdate(embed)
-          ? delete value.embed.type && embed({type: 'embed', ...value.embed})
+          ? value.embed.type !== 'embed' || !value.embed.type
+            ? delete value.embed.type && embed({type: 'embed', ...value.embed})
+            : embed({type: 'embed', ...value.embed})
           : delete embed.type && {type: 'embed', ...embed}
       })),
     [onChange]
@@ -166,7 +168,7 @@ export function LinkPageBreakBlock({
           </Card>
           {isEmbedActive && (
             <Card marginRight={0} minHeight={70} marginBottom={Spacing.ExtraSmall} padding={'10px'}>
-              <EmbedBlock value={embed} onChange={handleEmbedChange} />
+              <EmbedBlock value={{type: EmbedType.Other, ...embed}} onChange={handleEmbedChange} />
             </Card>
           )}
         </Box>

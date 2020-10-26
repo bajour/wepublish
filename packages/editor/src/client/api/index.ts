@@ -2657,6 +2657,7 @@ export const FullBlockFragmentDoc = gql`
     author
   }
   ... on LinkPageBreakBlock {
+    __typename
     text
     linkText
     linkURL

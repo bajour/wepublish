@@ -34,7 +34,6 @@ export function EmbedBlock({value, onChange, autofocus}: BlockProps<EmbedBlockVa
       setEmbedDialogOpen(true)
     }
   }, [])
-
   return (
     <>
       <Card

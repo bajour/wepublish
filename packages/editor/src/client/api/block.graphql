@@ -71,6 +71,7 @@ fragment FullBlock on Block {
   }
 
   ... on LinkPageBreakBlock {
+    __typename
     text
     linkText
     linkURL
