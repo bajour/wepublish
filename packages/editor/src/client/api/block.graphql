@@ -84,6 +84,7 @@ fragment FullBlock on Block {
       ...ImageRef
     }
     embed {
+      type
       url
       title
       width

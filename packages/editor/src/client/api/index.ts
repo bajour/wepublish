@@ -1767,7 +1767,7 @@ type FullBlock_LinkPageBreakBlock_Fragment = (
     & ImageRefFragment
   )>, embed?: Maybe<(
     { __typename?: 'EmbedBlock' }
-    & Pick<EmbedBlock, 'url' | 'title' | 'width' | 'height' | 'styleCustom'>
+    & Pick<EmbedBlock, 'type' | 'url' | 'title' | 'width' | 'height' | 'styleCustom'>
   )> }
 );
 
@@ -2670,6 +2670,7 @@ export const FullBlockFragmentDoc = gql`
       ...ImageRef
     }
     embed {
+      type
       url
       title
       width
