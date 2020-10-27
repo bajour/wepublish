@@ -70,7 +70,8 @@ export enum EmbedType {
   VimeoVideo = 'vimeoVideo',
   YouTubeVideo = 'youTubeVideo',
   SoundCloudTrack = 'soundCloudTrack',
-  Other = 'other'
+  Other = 'other',
+  Nested = 'embed'
 }
 
 export interface FacebookPostEmbed {
@@ -120,6 +121,15 @@ export interface OtherEmbed {
   styleCustom?: string
 }
 
+export interface NestedEmbed {
+  type: EmbedType.Nested
+  url?: string
+  title?: string
+  width?: number
+  height?: number
+  styleCustom?: string
+}
+
 export type EmbedBlockValue =
   | FacebookPostEmbed
   | FacebookVideoEmbed
@@ -129,6 +139,7 @@ export type EmbedBlockValue =
   | YouTubeVideoEmbed
   | SoundCloudTrackEmbed
   | OtherEmbed
+  | NestedEmbed
 
 export enum TeaserType {
   Article = 'article',
@@ -342,7 +353,9 @@ export function unionMapForBlock(block: BlockValue): BlockInput {
             }
           }
 
+        case EmbedType.Nested:
         case EmbedType.Other:
+        default:
           return {
             embed: {
               title: value.title,

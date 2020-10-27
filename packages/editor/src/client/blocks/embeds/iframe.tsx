@@ -8,11 +8,12 @@ export interface IframeEmbedProps {
   width?: number
   height?: number
   styleCustom?: string
+  type?: string
 }
 
-export function IframeEmbed({url, title, width, height, styleCustom}: IframeEmbedProps) {
+export function IframeEmbed({url, title, width, height, styleCustom, type}: IframeEmbedProps) {
   const ratio = width !== undefined && height !== undefined ? width / height : 0
-  const noRatio = !!styleCustom && ratio === 0
+  const noRatio = (!!styleCustom && ratio === 0) || (type && type === 'embed' && !!styleCustom)
   const styleCustomCss =
     noRatio && !!styleCustom && styleCustom !== ''
       ? transformCssStringToObject(styleCustom)
@@ -25,7 +26,7 @@ export function IframeEmbed({url, title, width, height, styleCustom}: IframeEmbe
     <Box width="100%">
       <Box
         position="relative"
-        paddingTop={`${noRatio && ratio === 0 ? '0' : (1 / ratio) * 100 + '%'}`}
+        paddingTop={`${noRatio ? '0' : (1 / ratio) * 100 + '%'}`}
         minHeight={'45px'}>
         <iframe
           src={url}

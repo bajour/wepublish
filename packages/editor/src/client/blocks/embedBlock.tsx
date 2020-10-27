@@ -27,7 +27,9 @@ import {IframeEmbed} from './embeds/iframe'
 export function EmbedBlock({value, onChange, autofocus}: BlockProps<EmbedBlockValue>) {
   const theme = useContext(ThemeContext)
   const [isEmbedDialogOpen, setEmbedDialogOpen] = useState(false)
-  const isEmpty = value.type === EmbedType.Other && value.url === undefined
+  const isEmpty =
+    (value.type === EmbedType.Other && value.url === undefined) ||
+    (value.type === EmbedType.Nested && value.url === undefined)
 
   useEffect(() => {
     if (autofocus && isEmpty) {
@@ -98,10 +100,12 @@ export function EmbedPreview({value}: EmbedPreviewProps) {
 
     case EmbedType.SoundCloudTrack:
       return <SoundCloudTrackEmbed trackID={value.trackID} />
-
+    case EmbedType.Other:
+    case EmbedType.Nested:
     default:
       return value.url ? (
         <IframeEmbed
+          type={value?.type}
           title={value.title}
           url={value.url}
           width={value.width}

@@ -46,10 +46,7 @@ export function LinkPageBreakBlock({
     linkTarget,
     hideButton,
     image,
-    embed = {
-      type: EmbedType.Other,
-      ...value.embed
-    }
+    embed
   } = value
 
   const focusRef = useRef<HTMLTextAreaElement>(null)
@@ -66,8 +63,14 @@ export function LinkPageBreakBlock({
     [onChange]
   )
 
-  // Delete GQL reponse typename
-  delete embed.__typename
+  // Delete GQL response typename manually (@todo maybe solve by type readonly? find another way)
+  if (embed && !!embed.__typename) {
+    delete embed.__typename
+  }
+  // Manually overwrite to generic embed block type (@todo make it better)
+  if (embed && embed.type === 'other' && !!embed.type) {
+    embed.type = 'embed'
+  }
 
   // Handle Embed input, overwrite type
   const handleEmbedChange = useCallback(
@@ -75,10 +78,8 @@ export function LinkPageBreakBlock({
       onChange(value => ({
         ...value,
         embed: isFunctionalUpdate(embed)
-          ? value.embed.type !== 'embed' || !value.embed.type
-            ? delete value.embed.type && embed({type: 'embed', ...value.embed})
-            : embed({type: 'embed', ...value.embed})
-          : delete embed.type && {type: 'embed', ...embed}
+          ? embed({type: 'embed', ...value.embed})
+          : {type: 'embed', ...embed}
       })),
     [onChange]
   )
@@ -168,7 +169,7 @@ export function LinkPageBreakBlock({
           </Card>
           {isEmbedActive && (
             <Card marginRight={0} minHeight={70} marginBottom={Spacing.ExtraSmall} padding={'10px'}>
-              <EmbedBlock value={{type: EmbedType.Other, ...embed}} onChange={handleEmbedChange} />
+              <EmbedBlock value={{type: EmbedType.Nested, ...embed}} onChange={handleEmbedChange} />
             </Card>
           )}
         </Box>
