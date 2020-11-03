@@ -10,8 +10,15 @@ storiesOf('Blocks|PeerPageBreak*', module)
   .add('Default', () => (
     <PageBreakBlock
       text={'Unterstuetze uns!'}
+      richText={[]}
       linkText={'Mehr'}
       linkURL={'https://wepublish.ch/'}
+      linkTarget={'_self'}
+      styleOption={'default'}
+      layoutOption={'default'}
+      templateOption={'default'}
+      imageID={undefined}
+      image={null}
     />
   ))
   .add('Peer', () => (
@@ -19,6 +26,13 @@ storiesOf('Blocks|PeerPageBreak*', module)
       peer={mockPeer}
       text={'Unterstuetze uns!'}
       linkText={'Mehr'}
+      richText={[]}
       linkURL={'https://wepublish.ch/'}
+      linkTarget={'_self'}
+      styleOption={'default'}
+      layoutOption={'default'}
+      templateOption={'default'}
+      imageID={undefined}
+      image={null}
     />
   ))
